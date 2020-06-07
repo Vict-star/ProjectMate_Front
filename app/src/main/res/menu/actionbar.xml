@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:logo="@mipmap/ic_launcher"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/tianqi"
+        android:title="天气预报"
+        android:icon="@drawable/tianqi"
+        app:showAsAction="always"></item>
+    <item android:id="@+id/ditu"
+        android:title="地图导航"
+        android:icon="@drawable/dingwei"
+        app:showAsAction="always"></item>
+    <item android:id="@+id/xingcheng"
+        android:title="行程安排"
+        android:icon="@drawable/xingcheng"
+        app:showAsAction="always"></item>
+    <item android:id="@+id/sumiao"
+        android:title="图像素描"
+        android:icon="@drawable/tuxiangsumiao"
+        app:showAsAction="never"></item>
+    <item android:id="@+id/jishiben"
+        android:title="记事本"
+        android:icon="@drawable/jishiben"
+        app:showAsAction="never"></item>
+    <item android:id="@+id/fengjing"
+        android:title="风景浏览"
+        android:icon="@drawable/timg"
+        app:showAsAction="never"></item>
+</menu>
