@@ -55,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){//判断选中哪一项
-            case R.id.ditu:
-                Intent intent=new Intent(MainActivity.this,BaiduMapActivity.class);
-                startActivity(intent);
             case R.id.sumiao:
                 Intent intent1=new Intent(MainActivity.this,TuxiangsumiaoActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.ditu:
+                Intent intent=new Intent(MainActivity.this,BaiduMapActivity.class);
+                startActivity(intent);
                 break;
             case R.id.jishiben:
                 Intent intent2=new Intent(MainActivity.this,JishibenActivity.class);

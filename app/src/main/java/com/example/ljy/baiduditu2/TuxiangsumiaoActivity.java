@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -47,6 +49,17 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
     private Uri imageUri;
     private Bitmap bitmap;
     private int sumiaoprogress=10;
+    private int state=0;
+    //使用handle，将图片显示出来
+    final  Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what==0x123){
+                picture1.setImageBitmap(bitmap);
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +68,7 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         Button takephoto = (Button) findViewById(R.id.takephotos);
         Button choosephoto = (Button) findViewById(R.id.choosephotos);
         Button baocun = (Button) findViewById(R.id.baocun);
+        Button sumiao = (Button) findViewById(R.id.kaishisumiao);
         seekBar=(SeekBar) findViewById(R.id.sumiaoshendu);
         picture1 = (ImageView) findViewById(R.id.picture1);
         //takephoto按钮监听器,paizhao()方法进行拍照
@@ -86,14 +100,30 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
                 }
             }
         });
+        //sumiao按钮监听器：开始进行素描
+        sumiao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bitmap!=null){
+                    Toast.makeText(TuxiangsumiaoActivity.this, "Drawing now, please wait a moment....", Toast.LENGTH_SHORT).show();
+                    if (state==1){//拍照
+                        bitmap=compressScale(bitmap,1024f,1000);  //压缩图片
+                    }
+                    bitmap = createPencli(bitmap, sumiaoprogress, sumiaoprogress);
+                    picture1.setImageBitmap(bitmap);
+                }else {
+                    Toast.makeText(TuxiangsumiaoActivity.this, "Please take a picture or choose a picture!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         //baocun按钮监听器：openAlbum()方法保存相册
         baocun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (bitmap!=null){
-                    saveBitmap(bitmap, "111.JPEG");
+                    saveBitmap("111.JPEG");
                 }else {
-                    Toast.makeText(TuxiangsumiaoActivity.this, "请拍照或选择照片", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TuxiangsumiaoActivity.this, "Please take a picture or choose a picture!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -101,11 +131,7 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (bitmap!=null){
-                    bitmap=compressScale(bitmap,480f,20);  //压缩图片
-                    bitmap = createPencli(bitmap, progress, progress);
-                    picture1.setImageBitmap(bitmap);
-                }
+                sumiaoprogress=progress+5;
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -141,7 +167,7 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         startActivityForResult(intent, CHOOSE_PHOTO); // 打开相册
     }
     //保存到相册
-    public void saveBitmap(Bitmap bitmap1, String bitName){
+    public void saveBitmap(String bitName){
         String fileName ;
         File file ;
         if(Build.BRAND .equals("Xiaomi") ){ // 小米手机
@@ -157,13 +183,13 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         try{
             out = new FileOutputStream(file);
             // 格式为 JPEG，照相机拍出的图片为JPEG格式的，PNG格式的不能显示在相册中
-            if(bitmap1.compress(Bitmap.CompressFormat.JPEG, 90, out))
+            if(bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out))
             {
                 out.flush();
                 out.close();
-// 插入图库
+                // 插入图库
                 MediaStore.Images.Media.insertImage(this.getContentResolver(), file.getAbsolutePath(), bitName, null);
-                Toast.makeText(TuxiangsumiaoActivity.this, "已保存到相册", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TuxiangsumiaoActivity.this, "Save successfully!", Toast.LENGTH_LONG).show();
             }
         }
         catch (FileNotFoundException e)
@@ -176,9 +202,7 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         }
         // 发送广播，通知刷新图库的显示
         this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + fileName)));
-        bitmap1=null;
     }
-
     //拍照 paizhao()和打开相册openAlbum()方法的startActivityForResult的回调
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -191,8 +215,7 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
 //---------------------------------------------------------------拍照的程序接口---------------------------------------------------------------
 //---------------------------------------------------------------拍照的程序接口---------------------------------------------------------------
                         bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                        bitmap=compressScale(bitmap,1024f,1000);  //压缩图片
-                        bitmap = createPencli(bitmap, sumiaoprogress, sumiaoprogress);
+                        state=1;
                         picture1.setImageBitmap(bitmap);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -239,13 +262,13 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
             // 如果是file类型的Uri，直接获取图片路径即可
             imagePath = uri.getPath();
         }
-        displayImage(imagePath,progress); // 根据图片路径显示图片
+        displayImage(imagePath); // 根据图片路径显示图片
     }
     //打开相册：根据图片的URI找到图片真实位置：4.4（19）以下系统
     private void handleImageBeforeKitKat(Intent data,int progress) {
         Uri uri = data.getData();
         String imagePath = getImagePath(uri, null);
-        displayImage(imagePath,progress);
+        displayImage(imagePath);
     }
     // 通过Uri和selection来获取真实的图片路径
     private String getImagePath(Uri uri, String selection) {
@@ -260,14 +283,20 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         return path;
     }
     //将相册中的照片显示到屏幕
-    private void displayImage(String imagePath,int progress) {
+    private void displayImage(String imagePath) {
         if (imagePath != null) {
 //------------------------------------------------------------将相册中的照片显示到屏幕程序接口---------------------------------------------------------------
 //------------------------------------------------------------将相册中的照片显示到屏幕程序接口---------------------------------------------------------------
             bitmap = BitmapFactory.decodeFile(imagePath);
-            bitmap=compressScale(bitmap,1024f,1000);  //压缩图片
-            bitmap= createPencli(bitmap, progress, progress);
-            picture1.setImageBitmap(bitmap);
+            Thread thread=new Thread(new Runnable() {    //定义线程进行图像处理
+                @Override
+                public void run() {
+                    bitmap=compressScale(bitmap,1024f,1000);  //压缩图片
+                    state=2;
+                    handler.sendEmptyMessage(0x123);
+                }
+            });
+            thread.start();  //开启线程
         } else {
             Toast.makeText(this, "failed to get image", Toast.LENGTH_SHORT).show();
         }
@@ -478,7 +507,9 @@ public class TuxiangsumiaoActivity extends AppCompatActivity {
         while (baos.toByteArray().length / 1024 > zhiliang) { // 循环判断如果压缩后图片是否大于1000kb,大于继续压缩
             baos.reset(); // 重置baos即清空baos
             image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
-            options -= 10;// 每次都减少10
+            if (options>25){
+                options -= 10;// 每次都减少10
+            }
         }
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());// 把压缩后的数据baos存放到ByteArrayInputStream中
         Bitmap bitmap1 = BitmapFactory.decodeStream(isBm, null, null);// 把ByteArrayInputStream数据生成图片

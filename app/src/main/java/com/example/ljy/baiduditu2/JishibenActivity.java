@@ -27,6 +27,7 @@ import java.util.List;
 
 public class JishibenActivity extends AppCompatActivity {
     File file;//声明保存文件的file对象
+    byte[] buffer=null;  //保存数据的数组
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,6 @@ public class JishibenActivity extends AppCompatActivity {
                 try {
                     fileOutputStream=new FileOutputStream(file);  //获得文件输出流对象
                     fileOutputStream.write(text.getBytes()); //保存信息
-                    fileOutputStream.flush();  //清除缓存
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -65,8 +65,9 @@ public class JishibenActivity extends AppCompatActivity {
                 }finally {
                     if (fileOutputStream!=null){
                         try {
+                            fileOutputStream.flush();  //清除缓存
                             fileOutputStream.close();
-                            Toast.makeText(JishibenActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(JishibenActivity.this,"Saved successfully!",Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -77,11 +78,22 @@ public class JishibenActivity extends AppCompatActivity {
         FileInputStream fileInputStream= null;//声明文件输入流对象
         try {
             fileInputStream = new FileInputStream(file);//获得文件输入流对象
-            fileInputStream.read(new byte[fileInputStream.available()]);  //读取数据
+            buffer=new byte[fileInputStream.available()];
+            fileInputStream.read(buffer);  //读取数据
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            if (fileInputStream!=null){
+                try {
+                    fileInputStream.close();
+                    String data=new String(buffer);
+                    editText.setText(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
     }

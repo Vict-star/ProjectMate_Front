@@ -4,6 +4,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/b"
         android:paddingBottom="0dp"
         android:paddingTop="3dp"
         android:paddingLeft="5dp"
@@ -14,23 +15,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_weight="3"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="请选择素描深度："
-                android:padding="8dp"
-                android:layout_marginTop="15dp"
-                android:textSize="16sp"/>
+                android:text="素描深度:"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:textSize="15sp"/>
             <SeekBar
                 android:id="@+id/sumiaoshendu"
-                android:layout_width="match_parent"
+                android:layout_weight="7"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:max="30"
+                android:max="25"
                 android:progress="5"
+                android:layout_marginTop="12dp"
                 android:thumb="@drawable/logo"
-                android:padding="12dp"
-                android:paddingStart="1dp"
-                android:paddingEnd="20dp"
                 />
+            <Button
+                android:id="@+id/baocun"
+                android:text="保存"
+                android:background="#38B0DE"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="15dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -40,30 +54,39 @@
             <Button
                 android:id="@+id/takephotos"
                 android:text="拍照"
-                android:textSize="16dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:background="#38B0DE"
                 android:layout_width="0dp"
                 android:layout_weight="4"
-                android:layout_height="35dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"/>
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"/>
             <Button
                 android:id="@+id/choosephotos"
                 android:text="从相册中选择"
                 android:background="#38B0DE"
                 android:textStyle="bold"
-                android:textSize="16dp"
+                android:textSize="15sp"
                 android:layout_weight="6"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 />
+            <Button
+                android:id="@+id/kaishisumiao"
+                android:text="开始素描"
+                android:background="#38B0DE"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="15dp"/>
         </LinearLayout>
-
         <ImageView
             android:layout_margin="10dp"
             android:id="@+id/picture1"
@@ -71,14 +94,4 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/baocun"
-        android:text="保存图片"
-        android:background="#38B0DE"
-        android:textStyle="bold"
-        android:textSize="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"/>
 </LinearLayout>

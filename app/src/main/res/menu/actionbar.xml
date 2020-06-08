@@ -18,12 +18,12 @@
         android:title="图像素描"
         android:icon="@drawable/tuxiangsumiao"
         app:showAsAction="never"></item>
-    <item android:id="@+id/jishiben"
-        android:title="记事本"
-        android:icon="@drawable/jishiben"
-        app:showAsAction="never"></item>
     <item android:id="@+id/fengjing"
         android:title="风景浏览"
         android:icon="@drawable/timg"
+        app:showAsAction="never"></item>
+    <item android:id="@+id/jishiben"
+        android:title="记事本"
+        android:icon="@drawable/jishiben"
         app:showAsAction="never"></item>
 </menu>

@@ -115,7 +115,7 @@ public class BaiduMapActivity extends AppCompatActivity {
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(this, "必须同意所有权限才能使用本程序", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Permission must be granted to use this program!!", Toast.LENGTH_SHORT).show();
                             finish();
                             return;
                         }
@@ -125,7 +125,7 @@ public class BaiduMapActivity extends AppCompatActivity {
                     mLocationClient.start();
                     dingeri();
                 } else {
-                    Toast.makeText(BaiduMapActivity.this, "发生未知错误", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BaiduMapActivity.this, "An unknown error occurred!!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 break;
